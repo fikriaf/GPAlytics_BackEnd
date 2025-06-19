@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "prepare": "chmod +x ./node_modules/.bin/tsc",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts"
-  },
+  "build": "tsc",
+  "start": "node dist/server.js"
+}
+,
   "keywords": [],
   "author": "",
   "license": "ISC",
