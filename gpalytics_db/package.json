@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/server.js",
+    "build": "npx tsc",
+    "start": "node src/server.js",
     "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts"
   },
   "keywords": [],
