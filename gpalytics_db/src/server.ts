@@ -21,7 +21,7 @@ app.use('/api/rekomendasi', rekomendasiRoutes);
 app.use('/api/ip', ipRoutes);
 app.use('/api/nilai', nilaiRoutes);
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || '';
 
 mongoose.connect(MONGO_URI)
