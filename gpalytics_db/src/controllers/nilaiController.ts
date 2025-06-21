@@ -90,28 +90,51 @@ export const createDataNilai = async (req: Request, res: Response) => {
 
 export const deleteDataNilai = async (req: Request, res: Response) => {
     try {
-        const { id_mahasiswa, semester, tipe_nilai, nilai } = req.params;
+        const { id_mahasiswa, semester, tipe_nilai, nilai, nama_mk } = req.params;
 
-        if (!id_mahasiswa || !semester || !tipe_nilai || !nilai) return;
+        if (!id_mahasiswa || !semester || !tipe_nilai || !nilai || !nama_mk) {
+            res.status(400).json({ message: "Parameter tidak lengkap." });
+            return
+        }
 
         const deleteResult = await DataNilai.deleteOne({
             id_mahasiswa,
             semester: Number(semester),
             tipe_nilai,
             nilai: Number(nilai)
-        });
+        }).populate('id_mk');
 
         if (deleteResult.deletedCount === 0) {
-            res.status(404).json({ message: 'Data nilai tidak ditemukan.' });
-        } else {
+            const data = await DataNilai.findOne({
+                id_mahasiswa,
+                semester: Number(semester),
+                tipe_nilai,
+                nilai: Number(nilai)
+            }).populate('id_mk');
+
+            if (!data || !data.id_mk) {
+                res.status(404).json({ message: 'Data nilai tidak ditemukan.' });
+                return
+            }
+
+            const mk = (data?.id_mk as any)?.nama_mk?.toLowerCase();
+            if (!mk || mk !== nama_mk.toLowerCase()) {
+                res.status(404).json({ message: 'Data nilai tidak ditemukan.' });
+                return
+            }
+
+            await data.deleteOne();
             res.json({ message: 'Data nilai berhasil dihapus.' });
+            return
         }
 
+        res.json({ message: 'Data nilai berhasil dihapus.' });
     } catch (err) {
         console.error('Error saat menghapus data nilai:', err);
         res.status(500).json({ message: 'Gagal menghapus data nilai.' });
     }
-}
+};
+
 
 export const editDataNilai = async (req: Request, res: Response) => {
     try {
