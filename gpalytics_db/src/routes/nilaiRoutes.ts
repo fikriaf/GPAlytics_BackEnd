@@ -1,9 +1,10 @@
 import express from "express";
-import { getDaftarNilaiLengkap, createDataNilai } from "../controllers/nilaiController";
+import { getDaftarNilaiLengkap, createDataNilai, deleteDataNilai } from "../controllers/nilaiController";
 
 const router = express.Router();
 
 router.post("/", createDataNilai);
+router.delete("/", deleteDataNilai)
 router.get("/all", getDaftarNilaiLengkap);
 
 export default router;

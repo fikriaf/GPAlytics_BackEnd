@@ -87,3 +87,19 @@ export const createDataNilai = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Gagal menyimpan data nilai.' });
     }
 };
+
+export const deleteDataNilai = async (req: Request, res: Response) => {
+    try {
+        const { id_mahasiswa } = req.query;
+
+        if (!id_mahasiswa) return;
+
+        const deleteResult = await DataNilai.deleteMany({ id_mahasiswa });
+
+        res.json({ message: 'Data nilai berhasil dihapus.', deletedCount: deleteResult.deletedCount });
+
+    } catch (err) {
+        console.error('Error saat menghapus data nilai:', err);
+        res.status(500).json({ message: 'Gagal menghapus data nilai.' });
+    }
+}
