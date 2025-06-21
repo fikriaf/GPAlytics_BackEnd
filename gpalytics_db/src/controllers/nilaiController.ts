@@ -95,7 +95,10 @@ export const deleteDataNilai = async (req: Request, res: Response) => {
         if (!id_mahasiswa || !semester || !tipe_nilai || !nilai) return;
 
         const deleteResult = await DataNilai.deleteOne({
-            id_mahasiswa, semester, tipe_nilai, nilai
+            id_mahasiswa,
+            semester: Number(semester),
+            tipe_nilai,
+            nilai: Number(nilai)
         });
 
         if (deleteResult.deletedCount === 0) {
