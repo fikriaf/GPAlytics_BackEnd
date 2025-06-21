@@ -112,3 +112,36 @@ export const deleteDataNilai = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Gagal menghapus data nilai.' });
     }
 }
+
+export const editDataNilai = async (req: Request, res: Response) => {
+    try {
+        const { id_mahasiswa, semester, tipe_nilai, nilai: nilaiLama } = req.params;
+        const { nilai: nilaiBaru } = req.body;
+
+        if (!id_mahasiswa || !semester || !tipe_nilai || nilaiLama == null || nilaiBaru == null) {
+            res.status(400).json({ message: "Parameter tidak lengkap" });
+            return
+        }
+
+        const updated = await DataNilai.findOneAndUpdate(
+            {
+                id_mahasiswa,
+                semester: Number(semester),
+                tipe_nilai,
+                nilai: Number(nilaiLama),
+            },
+            { nilai: Number(nilaiBaru) },
+            { new: true }
+        );
+
+        if (!updated) {
+            res.status(404).json({ message: "Data nilai tidak ditemukan." });
+            return
+        }
+
+        res.json({ message: "Data nilai berhasil diperbarui.", data: updated });
+    } catch (err) {
+        console.error("Error saat mengedit data nilai:", err);
+        res.status(500).json({ message: "Gagal mengedit data nilai." });
+    }
+};
