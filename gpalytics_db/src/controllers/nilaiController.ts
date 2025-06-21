@@ -90,12 +90,12 @@ export const createDataNilai = async (req: Request, res: Response) => {
 
 export const deleteDataNilai = async (req: Request, res: Response) => {
     try {
-        const { id_mahasiswa, id_mk, semester, tipe_nilai, nilai } = req.params;
+        const { id_mahasiswa, semester, tipe_nilai, nilai } = req.params;
 
-        if (!id_mahasiswa || !id_mk || !semester || !tipe_nilai || !nilai) return;
+        if (!id_mahasiswa || !semester || !tipe_nilai || !nilai) return;
 
         const deleteResult = await DataNilai.deleteOne({
-            id_mahasiswa, id_mk, semester, tipe_nilai, nilai
+            id_mahasiswa, semester, tipe_nilai, nilai
         });
 
         if (deleteResult.deletedCount === 0) {

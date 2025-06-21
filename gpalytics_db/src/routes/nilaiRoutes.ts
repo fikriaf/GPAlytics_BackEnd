@@ -4,7 +4,7 @@ import { getDaftarNilaiLengkap, createDataNilai, deleteDataNilai } from "../cont
 const router = express.Router();
 
 router.post("/", createDataNilai);
-router.delete("/:id_mahasiswa/:id_mk/:semester/:tipe_nilai/:nilai", deleteDataNilai)
+router.delete("/:id_mahasiswa/:semester/:tipe_nilai/:nilai", deleteDataNilai)
 router.get("/all", getDaftarNilaiLengkap);
 
 export default router;
