@@ -90,13 +90,19 @@ export const createDataNilai = async (req: Request, res: Response) => {
 
 export const deleteDataNilai = async (req: Request, res: Response) => {
     try {
-        const { id_mahasiswa } = req.query;
+        const { id_mahasiswa, id_mk, semester, tipe_nilai, nilai } = req.params;
 
-        if (!id_mahasiswa) return;
+        if (!id_mahasiswa || !id_mk || !semester || !tipe_nilai || !nilai) return;
 
-        const deleteResult = await DataNilai.deleteMany({ id_mahasiswa });
+        const deleteResult = await DataNilai.deleteOne({
+            id_mahasiswa, id_mk, semester, tipe_nilai, nilai
+        });
 
-        res.json({ message: 'Data nilai berhasil dihapus.', deletedCount: deleteResult.deletedCount });
+        if (deleteResult.deletedCount === 0) {
+            res.status(404).json({ message: 'Data nilai tidak ditemukan.' });
+        } else {
+            res.json({ message: 'Data nilai berhasil dihapus.' });
+        }
 
     } catch (err) {
         console.error('Error saat menghapus data nilai:', err);
