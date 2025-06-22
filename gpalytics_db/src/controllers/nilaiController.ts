@@ -92,49 +92,41 @@ export const deleteDataNilai = async (req: Request, res: Response) => {
     try {
         const { id_mahasiswa, semester, tipe_nilai, nilai } = req.params;
         const { nama_mk } = req.body;
-        
+
         if (!id_mahasiswa || !semester || !tipe_nilai || !nilai || !nama_mk) {
             res.status(400).json({ message: "Parameter tidak lengkap." });
-            return
+            return;
         }
 
-        const deleteResult = await DataNilai.deleteOne({
+        const data = await DataNilai.findOne({
             id_mahasiswa,
             semester: Number(semester),
             tipe_nilai,
             nilai: Number(nilai)
         }).populate('id_mk');
 
-        if (deleteResult.deletedCount === 0) {
-            const data = await DataNilai.findOne({
-                id_mahasiswa,
-                semester: Number(semester),
-                tipe_nilai,
-                nilai: Number(nilai)
-            }).populate('id_mk');
-
-            if (!data || !data.id_mk) {
-                res.status(404).json({ message: 'Data nilai tidak ditemukan.' });
-                return
-            }
-
-            const mk = (data?.id_mk as any)?.nama_mk?.toLowerCase();
-            if (!mk || mk !== nama_mk.toLowerCase()) {
-                res.status(404).json({ message: 'Data nilai tidak ditemukan.' });
-                return
-            }
-
-            await data.deleteOne();
-            res.json({ message: 'Data nilai berhasil dihapus.' });
-            return
+        if (!data || !data.id_mk) {
+            res.status(404).json({ message: 'Data nilai tidak ditemukan.' });
+            return;
         }
 
+        const mk = (data.id_mk as any)?.nama_mk?.toLowerCase();
+        if (!mk || mk !== nama_mk.toLowerCase()) {
+            res.status(404).json({ message: 'Data nilai tidak ditemukan.' });
+            return;
+        }
+
+        await data.deleteOne();
+
         res.json({ message: 'Data nilai berhasil dihapus.' });
+        return;
     } catch (err) {
         console.error('Error saat menghapus data nilai:', err);
         res.status(500).json({ message: 'Gagal menghapus data nilai.' });
+        return;
     }
 };
+
 
 
 export const editDataNilai = async (req: Request, res: Response) => {
