@@ -90,8 +90,9 @@ export const createDataNilai = async (req: Request, res: Response) => {
 
 export const deleteDataNilai = async (req: Request, res: Response) => {
     try {
-        const { id_mahasiswa, semester, tipe_nilai, nilai, nama_mk } = req.params;
-
+        const { id_mahasiswa, semester, tipe_nilai, nilai } = req.params;
+        const { nama_mk } = req.body;
+        
         if (!id_mahasiswa || !semester || !tipe_nilai || !nilai || !nama_mk) {
             res.status(400).json({ message: "Parameter tidak lengkap." });
             return
