@@ -15,6 +15,7 @@ export const getDaftarNilaiLengkap = async (req: Request, res: Response) => {
         
         // Gabungkan nilai per mata kuliah per semester
         const gabungNilai: Record<string, {
+            idNilai: string[];
             mataKuliah: string;
             sks: number;
             semester: number;
@@ -30,6 +31,7 @@ export const getDaftarNilaiLengkap = async (req: Request, res: Response) => {
             const key = mk._id.toString() + "-" + item.semester;
             if (!gabungNilai[key]) {
                 gabungNilai[key] = {
+                    idNilai: [],
                     mataKuliah: mk.nama_mk || "Tanpa Nama",
                     sks: mk.sks ?? 0,
                     semester: item.semester ?? 0,
@@ -40,6 +42,9 @@ export const getDaftarNilaiLengkap = async (req: Request, res: Response) => {
             if (typeof rawTipe === "string") {
                 const tipe = rawTipe.toLowerCase();
                 if (["tugas", "uts", "uas"].includes(tipe)) {
+                    if (item._id) {
+                        gabungNilai[key].idNilai.push(item._id.toString() ?? '');
+                    }
                     if (tipe === "tugas") gabungNilai[key].nilaiTugas = item.nilai ?? 0;
                     if (tipe === "uts") gabungNilai[key].nilaiUTS = item.nilai ?? 0;
                     if (tipe === "uas") gabungNilai[key].nilaiUAS = item.nilai ?? 0;
@@ -90,69 +95,50 @@ export const createDataNilai = async (req: Request, res: Response) => {
 
 export const deleteDataNilai = async (req: Request, res: Response) => {
     try {
-        const { id_mahasiswa, semester, tipe_nilai, nilai } = req.params;
-        const { nama_mk } = req.body;
+        const { id_nilai } = req.body;
 
-        if (!id_mahasiswa || !semester || !tipe_nilai || !nilai || !nama_mk) {
-            res.status(400).json({ message: "Parameter tidak lengkap." });
-            return;
+        if (!id_nilai) {
+            res.status(400).json({ message: "Parameter 'id_nilai' tidak lengkap." });
+            return
         }
 
-        const data = await DataNilai.findOne({
-            id_mahasiswa,
-            semester: Number(semester),
-            tipe_nilai: new RegExp(`^${tipe_nilai}$`, 'i'),
-            nilai: { $eq: Number(nilai) }
-        }).populate('id_mk');
+        const data = await DataNilai.findById(id_nilai);
 
-        if (!data || !data.id_mk) {
+        if (!data) {
             res.status(404).json({ message: 'Data nilai tidak ditemukan.' });
-            return;
+            return
         }
 
-        const mk = (data.id_mk as any)?.nama_mk?.toLowerCase();
-        if (!mk || mk !== nama_mk.toLowerCase()) {
-            res.status(404).json({ message: 'Data nilai tidak ditemukan.' });
-            return;
-        }
-
-        await data.deleteOne();
+        await DataNilai.deleteOne({ _id: id_nilai });
 
         res.json({ message: 'Data nilai berhasil dihapus.' });
-        return;
     } catch (err) {
         console.error('Error saat menghapus data nilai:', err);
         res.status(500).json({ message: 'Gagal menghapus data nilai.' });
-        return;
     }
 };
 
 
 
+
 export const editDataNilai = async (req: Request, res: Response) => {
     try {
-        const { id_mahasiswa, semester, tipe_nilai, nilai: nilaiLama } = req.params;
-        const { nilai: nilaiBaru } = req.body;
+        const { id_nilai, nilai: nilaiBaru } = req.body;
 
-        if (!id_mahasiswa || !semester || !tipe_nilai || nilaiLama == null || nilaiBaru == null) {
-            res.status(400).json({ message: "Parameter tidak lengkap" });
-            return
+        if (!id_nilai || nilaiBaru == null) {
+            res.status(400).json({ message: "Parameter 'id_nilai' atau 'nilai' tidak lengkap." });
+            return;
         }
 
-        const updated = await DataNilai.findOneAndUpdate(
-            {
-                id_mahasiswa,
-                semester: Number(semester),
-                tipe_nilai,
-                nilai: Number(nilaiLama),
-            },
+        const updated = await DataNilai.findByIdAndUpdate(
+            id_nilai,
             { nilai: Number(nilaiBaru) },
             { new: true }
         );
 
         if (!updated) {
             res.status(404).json({ message: "Data nilai tidak ditemukan." });
-            return
+            return;
         }
 
         res.json({ message: "Data nilai berhasil diperbarui.", data: updated });
@@ -161,3 +147,4 @@ export const editDataNilai = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Gagal mengedit data nilai." });
     }
 };
+
