@@ -101,8 +101,8 @@ export const deleteDataNilai = async (req: Request, res: Response) => {
         const data = await DataNilai.findOne({
             id_mahasiswa,
             semester: Number(semester),
-            tipe_nilai,
-            nilai: Number(nilai)
+            tipe_nilai: new RegExp(`^${tipe_nilai}$`, 'i'),
+            nilai: { $eq: Number(nilai) }
         }).populate('id_mk');
 
         if (!data || !data.id_mk) {
