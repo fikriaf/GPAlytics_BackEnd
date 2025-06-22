@@ -30,7 +30,8 @@ export const getIPKByMahasiswa = async (req: Request, res: Response) => {
 
         const semesterGrouped: Record<number, typeof nilaiList> = {};
         nilaiList.forEach(item => {
-            const smt = item.semester || 0;
+            const smt = item.semester;
+            if (!smt || smt < 1) return;
             if (!semesterGrouped[smt]) semesterGrouped[smt] = [];
             semesterGrouped[smt].push(item);
         });
