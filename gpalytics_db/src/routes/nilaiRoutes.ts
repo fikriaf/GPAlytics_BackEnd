@@ -4,7 +4,7 @@ import { getDaftarNilaiLengkap, createDataNilai, deleteDataNilai, editDataNilai 
 const router = express.Router();
 
 router.post("/", createDataNilai);
-router.delete('/nilai/:id_mahasiswa/:semester/:tipe_nilai/:nilai', deleteDataNilai);
+router.delete('/:id_mahasiswa/:semester/:tipe_nilai/:nilai', deleteDataNilai);
 router.put('/:id_mahasiswa/:semester/:tipe_nilai/:nilai', editDataNilai);
 router.get("/all", getDaftarNilaiLengkap);
 
