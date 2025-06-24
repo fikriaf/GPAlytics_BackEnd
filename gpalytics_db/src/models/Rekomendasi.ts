@@ -6,20 +6,7 @@ const RekomendasiSchema = new mongoose.Schema({
         ref: 'Mahasiswa',
         required: true
     },
-    id_analisis: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Analisis',
-        required: true
-    },
-    rekomendasi: [
-        {
-        fokus: String,
-        komponen: String,
-        alasan: String,
-        saran: String
-        }
-    ],
-    kategori_risiko: String,
+    rekomendasi: String,
     dibuat: {
         type: Date,
         default: Date.now

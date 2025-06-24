@@ -2,13 +2,15 @@ import express from 'express';
 import {
     getAllRekomendasi,
     getRekomendasiById,
-    createRekomendasi
+    createRekomendasi,
+    editRekomendasi
 } from '../controllers/rekomendasiController';
 
 const router = express.Router();
 
 router.get('/', getAllRekomendasi);
-router.get('/:id', getRekomendasiById);
 router.post('/', createRekomendasi);
+router.get('/:id', getRekomendasiById);
+router.put('/:id', editRekomendasi);
 
 export default router;

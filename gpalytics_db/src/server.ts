@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import mahasiswaRoutes from './routes/mahasiswaRoutes';
 import mataKuliahRoutes from './routes/matakKuliahRoutes';
 import rekomendasiRoutes from './routes/rekomendasiRoutes';
+import analisisRoutes from './routes/analisisRoutes';
 import ipRoutes from './routes/ipRoutes';
 import nilaiRoutes from './routes/nilaiRoutes';
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use('/api/mahasiswa', mahasiswaRoutes);
 app.use('/api/mata-kuliah', mataKuliahRoutes);
 app.use('/api/rekomendasi', rekomendasiRoutes);
+app.use('/api/analisis', analisisRoutes);
 app.use('/api/ip', ipRoutes);
 app.use('/api/nilai', nilaiRoutes);
 
